@@ -1,24 +1,53 @@
 #io 基础
 ![img.png](img.png)
-###io 分为字节流和字符流程
-####字节流流可以操作所有类型的数据
-####字符流只能操作文本,字符流的数据效率较高
-###缓冲流:
+### io 分为字节流和字符流程
+#### 字节流流可以操作所有类型的数据
+#### 字符流只能操作文本,字符流的数据效率较高
+### 缓冲流:
     可以提高io的操作效率:因为程序和磁盘的交互是很浪费性能的.而缓冲流在内存中设置一个缓存区，缓冲区先存储足够的待操作数据后，再与内存或磁盘进行交互。这样，在总数据量不变的情况下，通过提高每次交互的数据量，减少了交互次数
-#####BufferedInputStream、BufferedOutputStream（缓冲字节流）
-#####BufferedReader、BufferedWriter（字符缓冲流）
-
-###AIO
+##### BufferedInputStream、BufferedOutputStream（缓冲字节流）
+##### BufferedReader、BufferedWriter（字符缓冲流）
+### 基本使用
+    一、按数据来源（去向）分类：
+    1 、是文件： FileInputStream, FileOutputStream, ( 字节流 )FileReader, FileWriter( 字符 )
+    2 、是 byte[] ： ByteArrayInputStream, ByteArrayOutputStream( 字节流 )
+    3 、是 Char[]: CharArrayReader, CharArrayWriter( 字符流 )
+    4 、是 String: StringBufferInputStream, StringBufferOuputStream ( 字节流 )StringReader, StringWriter( 字符流 )
+    5 、网络数据流： InputStream, OutputStream,( 字节流 ) Reader, Writer( 字符流 )
+    二、按是否格式化输出分：
+    1 、要格式化输出： PrintStream, PrintWriter
+    三、按是否要缓冲分：
+    1 、要缓冲： BufferedInputStream, BufferedOutputStream,( 字节流 ) BufferedReader, BufferedWriter( 字符流 )
+    四、按数据格式分：
+    1 、二进制格式（只要不能确定是纯文本的） : InputStream, OutputStream 及其所有带 Stream 结束的子类
+    2 、纯文本格式（含纯英文与汉字或其他编码方式）； Reader, Writer 及其所有带 Reader, Writer 的子类
+    五、按输入输出分：
+    1 、输入： Reader, InputStream 类型的子类
+    2 、输出： Writer, OutputStream 类型的子类
+    六、特殊需要：
+    1 、从 Stream 到 Reader,Writer 的转换类： InputStreamReader, OutputStreamWriter
+    2 、对象输入输出： ObjectInputStream, ObjectOutputStream
+    3 、进程间通信： PipeInputStream, PipeOutputStream, PipeReader, PipeWriter
+    4 、合并输入： SequenceInputStream
+    5 、更特殊的需要： PushbackInputStream, PushbackReader, LineNumberInputStream, LineNumberReader
+    决定使用哪个类以及它的构造进程的一般准则如下（不考虑特殊需要）：
+    首先，考虑最原始的数据格式是什么： 原则四
+    第二，是输入还是输出：原则五
+    第三，是否需要转换流：原则六第 1 点
+    第四，数据来源（去向）是什么：原则一
+    第五，是否要缓冲：原则三 （特别注明：一定要注意的是 readLine() 是否有定义，有什么比 read, write 更特殊的输入或输出方法）
+    第六，是否要格式化输出：原则二
+ ### AIO
 AIO 也就是 NIO 2。Java 7 中引入了 NIO 的改进版 NIO 2,它是异步 IO 模型。
 
 异步 IO 是基于事件和回调机制实现的，也就是应用操作之后会直接返回，不会堵塞在那里，当后台处理完成，操作系统会通知相应的线程进行后续的操作。
 ![img_5.png](img_5.png)
-###BIO
+ ### BIO
 BIO 属于同步阻塞 IO 模型 。
 同步阻塞 IO 模型中，应用程序发起 read 调用后，会一直阻塞，直到内核把数据拷贝到用户空间。
 ![img_1.png](img_1.png)
 在客户端连接数量不高的情况下，是没问题的。但是，当面对十万甚至百万级连接的时候，传统的 BIO 模型是无能为力的。因此，我们需要一种更高效的 I/O 处理模型来应对更高的并发量。
-###NIO
+ ### NIO
     Java 中的 NIO 于 Java 1.4 中引入，对应 java.nio 包，提供了 Channel , Selector，Buffer 等抽象。NIO 中的 N 可以理解为 Non-blocking，不单纯是 New。它支持面向缓冲的，基于通道的 I/O 操作方法。 对于高负载、高并发的（网络）应用，应使用 NIO 。
     
     Java 中的 NIO 可以看作是 I/O 多路复用模型。也有很多人认为，Java 中的 NIO 属于同步非阻塞 IO 模型。
@@ -45,7 +74,7 @@ BIO 属于同步阻塞 IO 模型 。
     
     Java 中的 NIO ，有一个非常重要的选择器 ( Selector ) 的概念，也可以被称为 多路复用器。通过它，只需要一个线程便可以管理多个客户端连接。当客户端数据到了之后，才会为其服务。
 ![img_4.png](img_4.png)
-###select、poll、epoll详解
+ ### select、poll、epoll详解
 一、概念说明
 
     1、内核态（内核空间）和用户态（用户空间）的区别和联系？
@@ -63,7 +92,7 @@ BIO 属于同步阻塞 IO 模型 。
     3、缓存IO
     
     Linux的缓存IO机制中，操作系统会将IO的数据缓存在文件系统的页缓存中，也就是说，数据会先被拷贝到操作系统内核的缓冲区，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。
-###基本概念
+ ### 基本概念
     select，poll，epoll都是IO多路复用的机制。I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。
     
     1、select
@@ -81,8 +110,10 @@ BIO 属于同步阻塞 IO 模型 。
     3、epoll
     
     相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符
-###实现细节
+ ### 实现细节
     如果没有I/O事件产生，我们的程序就会阻塞在select处。但是依然有个问题，我们从select那里仅仅知道了，有I/O事件发生了，但却并不知道是那几个流（可能有一个，多个，甚至全部），我们只能无差别轮询所有流，找出能读出数据，或者写入数据的流，对他们进行操作。
     但是使用select，我们有O(n)的无差别轮询复杂度，同时处理的流越多，没一次无差别轮询时间就越长。再次
     说了这么多，终于能好好解释epoll了
     epoll可以理解为event poll，不同于忙轮询和无差别轮询，epoll之会把哪个流发生了怎样的I/O事件通知我们。此时我们对这些流的操作都是有意义的。（复杂度降低到了O(1)）
+ ### 0拷贝扫盲
+https://mp.weixin.qq.com/s/FgBCop2zFfcX5ZszE0NoCQ
