@@ -117,3 +117,18 @@ BIO 属于同步阻塞 IO 模型 。
     epoll可以理解为event poll，不同于忙轮询和无差别轮询，epoll之会把哪个流发生了怎样的I/O事件通知我们。此时我们对这些流的操作都是有意义的。（复杂度降低到了O(1)）
  ### 0拷贝扫盲
 https://mp.weixin.qq.com/s/FgBCop2zFfcX5ZszE0NoCQ
+
+## 线程池
+      一.如何设置合理的线程池:
+      阻塞队列:
+      LinkedBlockingQueue:可以设置大小的无界队列,当任务耗时较长时可能会导致大量新任务在队列中堆积最终导致OOM
+      ArrayBlockingQueue:一类是遵循FIFO原则的队列如ArrayBlockingQueue，另一类是优先级队列如PriorityBlockingQueue。PriorityBlockingQueue中的优先级由任务的Comparator决定。
+      使用有界队列时队列大小需和线程池大小互相配合，线程池较小有界队列较大时可减少内存消耗，降低cpu使用率和上下文切换，但是可能会限制系统吞吐量。
+      SynchronousQueue:SynchronousQueue不是一个真正的队列，而是一种线程之间移交的机制。要将一个元素放入SynchronousQueue中，必须有另一个线程正在等待接收这个元素。
+      只有在使用无界线程池或者有抛弃策略时才建议使用该队列。
+      抛弃策略:
+      AbortPolicy:该方法直接抛出拒绝异常
+      CallerRunsPolicy:就是调用者执行
+      DiscardPolicy:直接丢弃，不做任何处理
+      DiscardOldestPolicy:这种策略指的是丢弃等待队列里头节点的任务，执行刚提交的任务
+  
