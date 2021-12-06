@@ -22,7 +22,7 @@
     set
         sadd key :先set中加入原素
         smembers key :是否存在key
-        scard key : value 的数量
+        scard key : value 的数量`
         srandmember key : 随机获取一个key
         spop key :弹出一个元素
         srem key , value1,value2 :删除某个元素
